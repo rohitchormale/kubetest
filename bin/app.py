@@ -7,6 +7,7 @@
 - requirements
 Flask==1.1.1
 
+Run on public ip, so it can be accessed by container
 """
 
 import json
@@ -28,4 +29,4 @@ def readiness():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)

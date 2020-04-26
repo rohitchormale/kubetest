@@ -1,6 +1,7 @@
 import requests
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.conf import settings
 
 # Create your views here.
 
@@ -26,8 +27,7 @@ def readiness2(request):
 
 
 def liveness3(request):
-    URL = "http://127.0.0.1:5000/liveness"
-    resp = requests.get(URL)
+    resp = requests.get(settings.LIVENESS_ENDPOINT)
     if resp.status_code == 200:
         data = {"status": "+OK", "msg": "Liveness OK"}
         return JsonResponse(data, status=200)
@@ -36,8 +36,7 @@ def liveness3(request):
 
 
 def readiness3(request):
-    URL = "http://127.0.0.1:5000/readiness"
-    resp = requests.get(URL)
+    resp = requests.get(settings.READINESS_ENDPOINT)
     if resp.status_code == 200:
         data = {"status": "+OK", "msg": "rediness OK"}
         return JsonResponse(data, status=200)
