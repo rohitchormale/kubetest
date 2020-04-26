@@ -1,0 +1,224 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubetest
+
+---
+
+apiVersion: v1   
+kind: ConfigMap
+metadata:
+  namespace: kubetest
+  name: kubetest-config
+data:
+  DEBUG: "1"
+
+---
+
+# Deployment scenario
+# Both Liveness and Readiness Endpoints will return 200 OK
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubetest
+  name: kubetest-deployment-liveness-ok-readiness-ok
+  labels:
+    app: kubetest-app-liveness-ok-readiness-ok
+spec:
+  selector:
+    matchLabels:
+      app: kubetest-app-liveness-ok-readiness-ok
+      tier: kubetest-api
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kubetest-app-liveness-ok-readiness-ok
+        tier: kubetest-api
+    spec:
+      containers:
+        - name: kubetest-liveness-ok-readiness-ok
+          image: rohitchormale/kubetest:liveness-ok-readiness-ok
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8000
+          envFrom:
+          - configMapRef:
+              name: kubetest-config
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /liveness
+              port: 8000
+            initialDelaySeconds: 16
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 16
+            periodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kubetest
+  name: kubetest-service-liveness-ok-readiness-ok
+  labels:
+    app: kubetest-app-liveness-ok-readiness-ok
+    tier: kubetest-api
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+  selector:
+    app: kubetest-app-liveness-ok-readiness-ok
+    tier: kubetest-api
+
+---             
+
+# Deployment scenario
+# Liveness Endpoint will return 500 Internal Server Error
+# Readiness Endpoint will return 200 OK
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubetest
+  name: kubetest-deployment-liveness-error-readiness-ok
+  labels:
+    app: kubetest-app-liveness-error-readiness-ok
+spec:
+  selector:
+    matchLabels:
+      app: kubetest-app-liveness-error-readiness-ok
+      tier: kubetest-api
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kubetest-app-liveness-error-readiness-ok
+        tier: kubetest-api
+    spec:
+      containers:
+        - name: kubetest-liveness-error-readiness-ok
+          image: rohitchormale/kubetest:liveness-error-readiness-ok
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8000
+          envFrom:
+          - configMapRef:
+              name: kubetest-config
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /liveness
+              port: 8000
+            initialDelaySeconds: 16
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 16
+            periodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kubetest
+  name: kubetest-service-liveness-error-readiness-ok
+  labels:
+    app: kubetest-app-liveness-error-readiness-ok
+    tier: kubetest-api
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+  selector:
+    app: kubetest-app-liveness-error-readiness-ok
+    tier: kubetest-api
+
+
+---             
+
+# Deployment scenario
+# Liveness Endpoint will return 200 OK
+# Readiness Endpoint will return 500 Internal Server Error
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubetest
+  name: kubetest-deployment-liveness-ok-readiness-error
+  labels:
+    app: kubetest-app-liveness-ok-readiness-error
+spec:
+  selector:
+    matchLabels:
+      app: kubetest-app-liveness-ok-readiness-error
+      tier: kubetest-api
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kubetest-app-liveness-ok-readiness-error
+        tier: kubetest-api
+    spec:
+      containers:
+        - name: kubetest-liveness-ok-readiness-error
+          image: rohitchormale/kubetest:liveness-ok-readiness-error
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8000
+          envFrom:
+          - configMapRef:
+              name: kubetest-config
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /liveness
+              port: 8000
+            initialDelaySeconds: 16
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 16
+            periodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kubetest
+  name: kubetest-service-liveness-ok-readiness-error
+  labels:
+    app: kubetest-app-liveness-ok-readiness-error
+    tier: kubetest-api
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+  selector:
+    app: kubetest-app-liveness-ok-readiness-error
+    tier: kubetest-api
+
+
