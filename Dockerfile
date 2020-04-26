@@ -1,5 +1,6 @@
-FROM python:3.7.4-alpine3.0
+FROM python:3.7.4-alpine3.10
 LABEL name="kubetest"
+ENV PYTHONBUFFERED 1
 RUN mkdir -p /kubetest
 COPY . /kubetest
 WORKDIR /kubetest
