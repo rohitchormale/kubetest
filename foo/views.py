@@ -26,7 +26,7 @@ def readiness2(request):
 
 
 def liveness3(request):
-    URL = "http://127.0.0.1:7000/liveness"
+    URL = "http://127.0.0.1:5000/liveness"
     resp = requests.get(URL)
     if resp.status_code == 200:
         data = {"status": "+OK", "msg": "Liveness OK"}
@@ -36,7 +36,7 @@ def liveness3(request):
 
 
 def readiness3(request):
-    URL = "http://127.0.0.1:7000/readiness"
+    URL = "http://127.0.0.1:5000/readiness"
     resp = requests.get(URL)
     if resp.status_code == 200:
         data = {"status": "+OK", "msg": "rediness OK"}
